@@ -23,6 +23,9 @@ public:
   // measurement covariance matrix
   Eigen::MatrixXd R_;
 
+  short noise_ax = 9;
+  short noise_ay = 9;
+
   /**
    * Constructor
    */
