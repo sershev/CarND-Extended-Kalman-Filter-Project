@@ -11,17 +11,18 @@ Tools::~Tools() {}
 
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
                               const vector<VectorXd> &ground_truth) {
-   VectorXd mean;
-   mean << 0,0,0,0;
-   int n = estimations.size();
-   assert (n == ground_truth.size());
+    VectorXd mean(4);
+    mean << 0,0,0,0;
+    int n = estimations.size();
+    assert (n == ground_truth.size());
 
-   for (int i=0; i < n; ++i){
+    for (int i=0; i < n; ++i){
         VectorXd residual = estimations[i] - ground_truth[i];
+        residual = residual.array().pow(2);
         mean += residual;
-   }
-   mean = mean / n;
-   return mean;
+    }
+    mean = mean / n;
+    return mean;
 }
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
@@ -43,7 +44,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
     auto pdot_nach_px = py*(vxpy-vypx)/pow(pxpy_squared_square_root, 3);
 
     Hj << px/pxpy_squared_square_root, py/pxpy_squared_square_root, 0,0,
-          -py/pxpy_squared, px/pxpy_squared, 0,0,
-          pdot_nach_px, pdot_nach_py, px_by_pxpy_squared_square_root, py_by_pxpy_squared_square_root;
+            -py/pxpy_squared, px/pxpy_squared, 0,0,
+            pdot_nach_px, pdot_nach_py, px_by_pxpy_squared_square_root, py_by_pxpy_squared_square_root;
     return Hj;
 }

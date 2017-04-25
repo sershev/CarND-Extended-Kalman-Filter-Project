@@ -133,7 +133,9 @@ int main(int argc, char* argv[]) {
 
   //Call the EKF-based fusion
   size_t N = measurement_pack_list.size();
+  cout << "Found " << N << " mesurements in the list" << endl;
   for (size_t k = 0; k < N; ++k) {
+    cout << "k: " << k << endl;
     // start filtering from the second frame (the speed is unknown in the first
     // frame)
     fusionEKF.ProcessMeasurement(measurement_pack_list[k]);
@@ -166,6 +168,7 @@ int main(int argc, char* argv[]) {
     estimations.push_back(fusionEKF.ekf_.x_);
     ground_truth.push_back(gt_pack_list[k].gt_values_);
   }
+  cout << "No more mesurements" << endl;
 
   // compute the accuracy (RMSE)
   Tools tools;
