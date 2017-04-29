@@ -3,6 +3,7 @@
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using namespace std;
 
 KalmanFilter::KalmanFilter() {}
 
@@ -18,26 +19,44 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   Q_ = Q_in;
 }
 
+void KalmanFilter::UpdateValues(const MatrixXd &y){
+    MatrixXd PH_transpose = P_ * H_.transpose();
+    MatrixXd S = H_ * PH_transpose + R_;
+    MatrixXd K = PH_transpose * S.inverse();
+    x_ = x_ + (K*y);
+    int rows = P_.rows();
+    int cols = P_.cols();
+    MatrixXd I = MatrixXd::Identity(rows, cols);
+    P_ = (I - K * H_) * P_;
+}
+
 void KalmanFilter::Predict() {
-    this->x_ = this->F_*this->x_;
-    this->P_ = this->F_*this->P_*this->F_.transpose() + this->Q_;
+    x_ = F_*x_;
+    P_ = F_*P_*F_.transpose() + Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
-    MatrixXd y = z - this->H_ * this->x_;
-    MatrixXd S = this->H_ * this->P_ * this->H_.transpose() + this->R_;
-    MatrixXd K = this->P_*this->H_.transpose() * S.inverse();
-    this->x_ = this->x_ + (K*y);
-    auto rows = this->P_.rows();
-    auto cols = this->P_.cols();
-    MatrixXd I = MatrixXd::Identity(rows, cols);
-    this->P_ = (I - K*this->H_) * this->P_;
+    MatrixXd y = z - H_ * x_;
+    KalmanFilter::UpdateValues(y);
+
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-    std::cout << "wtf" << std::endl;
-  /**
-  TODO:
-    * update the state by using Extended Kalman Filter equations
-  */
+    std::cout << "UpdateEKF" << std::endl;
+    MatrixXd y = z - CartesianToPolar();
+    KalmanFilter::UpdateValues(y);
 }
+
+VectorXd KalmanFilter::CartesianToPolar(){
+    VectorXd polar(3);
+    auto ro = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
+    auto phi = atan2(x_(1), x_(0));
+    auto ro_dot = (x_(0)*x_(2)+ x_(1)*x_(3))/ro;
+
+    cout << "ro: " << ro << endl;
+    cout << "phi: " << phi << endl;
+    cout << "ro_dot: " << ro_dot << endl;
+    polar << ro, phi, ro_dot;
+    return polar;
+}
+
