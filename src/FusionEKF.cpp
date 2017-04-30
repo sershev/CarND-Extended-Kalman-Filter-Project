@@ -59,6 +59,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (!is_initialized_) {
     // first measurement
     cout << "Initializing EKF: " << endl;
+    previous_timestamp_ = measurement_pack.timestamp_;
     ekf_.x_ = VectorXd(4);
 
     cout << "measurement_pack: " <<  measurement_pack.sensor_type_ << measurement_pack.raw_measurements_ << endl;
@@ -70,7 +71,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         auto sin_phi = sin(phi);
         auto cos_phi = cos(phi);
 
-        ekf_.x_ << ro * cos_phi,  ro * sin_phi, 0, 0; //ro_dot*cos_phi, ro_dot*sin_phi;
+        ekf_.x_ << ro * cos_phi,  ro * sin_phi, ro_dot*cos_phi, ro_dot*sin_phi;
 
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
@@ -115,13 +116,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-
-      try {
-        Hj_ = tools.CalculateJacobian(ekf_.x_);
-      } catch (std::invalid_argument e) {
-          cerr << e.what() << endl;
-          return;
-      }
+      Hj_ = tools.CalculateJacobian(ekf_.x_);
 
       ekf_.H_ = Hj_;
       ekf_.R_ = R_radar_;

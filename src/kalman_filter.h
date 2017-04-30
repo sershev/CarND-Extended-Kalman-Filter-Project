@@ -70,6 +70,9 @@ public:
 private:
   void UpdateValues(const Eigen::MatrixXd &y);
   Eigen::VectorXd CartesianToPolar();
+  double pi2 = 2*M_PI;
+  double phi_fallback = 0.785398; // 0.785398 = atan2(1) = atan2(x,x)
+  double ro_fallback = 0.0001;
 
 };
 

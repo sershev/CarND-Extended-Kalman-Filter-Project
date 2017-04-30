@@ -35,15 +35,12 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
     float vx = x_state(2);
     float vy = x_state(3);
     float pxpy_squared = pow(px,2) + pow(py,2);
+    //check division by zero
+    pxpy_squared = std::max(pxpy_squared, pypy_squared_fallback);
     float pxpy_squared_square_root = sqrt(pxpy_squared);
     float vypx = vy*px;
     float vxpy = vx*py;
 
-    //check division by zero
-    if(pxpy_squared < threshold){
-        cerr << "Tools::CalculateJacobian() - Error - Devision by Zero" << endl;
-        throw std::invalid_argument( "CalculateJacobian - Devision by Zero or almost Zero" );
-    }
 
     auto px_by_pxpy_squared_square_root = px/pxpy_squared_square_root;
     auto py_by_pxpy_squared_square_root = py/pxpy_squared_square_root;

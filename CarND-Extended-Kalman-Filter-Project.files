@@ -2,6 +2,7 @@ CMakeLists.txt
 Docs/Data_Flow_Doc.txt
 Docs/Input_Output File Format.txt
 README.md
+data/obj_pose-laser-radar-synthetic-input.txt
 data/sample-laser-radar-measurement-data-1.txt
 data/sample-laser-radar-measurement-data-2.txt
 ide_profiles/README.md

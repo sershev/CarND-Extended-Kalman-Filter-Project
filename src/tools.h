@@ -25,7 +25,7 @@ public:
   */
   Eigen::MatrixXd CalculateJacobian(const Eigen::VectorXd& x_state);
 private:
-  float threshold = 0.0002;
+  float pypy_squared_fallback = 0.0002;
 
 };
 

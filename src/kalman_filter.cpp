@@ -42,16 +42,26 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-    std::cout << "UpdateEKF" << std::endl;
-    MatrixXd y = z - CartesianToPolar();
+    VectorXd y = z - CartesianToPolar();
+    if (y(1) > M_PI){
+        y(1) = y(1) - pi2;
+    }
+    else if(y(1) < -M_PI){
+        y(1) = y(1) + pi2;
+    }
     KalmanFilter::UpdateValues(y);
 }
 
 VectorXd KalmanFilter::CartesianToPolar(){
     VectorXd polar(3);
+    double phi;
     auto ro = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
-    auto phi = atan2(x_(1), x_(0));
-    auto ro_dot = (x_(0)*x_(2)+ x_(1)*x_(3))/ro;
+    if (x_(0) == 0){
+        phi = phi_fallback;
+    }else{
+        phi = atan2(x_(1), x_(0));
+    }
+    auto ro_dot = (x_(0)*x_(2)+ x_(1)*x_(3)) / std::max(ro, ro_fallback);
 
     cout << "ro: " << ro << endl;
     cout << "phi: " << phi << endl;

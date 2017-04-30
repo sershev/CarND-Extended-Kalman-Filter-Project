@@ -34,3 +34,4 @@ src/Eigen/src/StlSupport
 src/Eigen/src/SuperLUSupport
 src/Eigen/src/SVD
 src/Eigen/src/UmfPackSupport
+data
