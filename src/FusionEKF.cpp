@@ -89,11 +89,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Prediction
    ****************************************************************************/
 
-  long long delta_t = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+  double delta_t = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
+
   ekf_.F_(0,2) = delta_t;
   ekf_.F_(1,3) = delta_t;
-
 
   ekf_.Q_(0,0) = pow(delta_t,4)/4*ekf_.noise_ax;
   ekf_.Q_(0,2) = pow(delta_t,3)/2*ekf_.noise_ax;
