@@ -40,8 +40,9 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
     float vxpy = vx*py;
 
     //check division by zero
-    if(px==0 || py==0){
+    if(pxpy_squared < threshold){
         cerr << "Tools::CalculateJacobian() - Error - Devision by Zero" << endl;
+        throw std::invalid_argument( "CalculateJacobian - Devision by Zero or almost Zero" );
     }
 
     auto px_by_pxpy_squared_square_root = px/pxpy_squared_square_root;

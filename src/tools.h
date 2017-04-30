@@ -24,6 +24,8 @@ public:
   * A helper method to calculate Jacobians.
   */
   Eigen::MatrixXd CalculateJacobian(const Eigen::VectorXd& x_state);
+private:
+  float threshold = 0.0002;
 
 };
 
